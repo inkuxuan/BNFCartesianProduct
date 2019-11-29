@@ -26,7 +26,7 @@ public class BNFBufferedReader implements BNFReader {
         reader = new BufferedReader(new InputStreamReader(inputStream));
     }
 
-    public BNFBufferedReader(BufferedReader reader){
+    public BNFBufferedReader(BufferedReader reader) {
         this.reader = reader;
     }
 
@@ -234,9 +234,10 @@ public class BNFBufferedReader implements BNFReader {
                     // like ...<.........>|
                     //         ^synErrPos ^nextSplit
                     // or   ...<.........> END
-                    if (synErrPos>0&&
-                            ((synErrPos < nextSplit) && nextSplit < end)
-                                    || nextSplit < 0 && synErrPos >= 0) {
+                    if (
+                            (nextSplit > 0 && synErrPos > 0) &&
+                            (nextSplit < end && synErrPos < nextSplit)
+                    ) {
                         System.err.println(s.substring(pos, end));
                         for (int j = 0; j < synErrPos - 1; j++)
                             System.err.print(" ");
