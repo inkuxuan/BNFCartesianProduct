@@ -52,3 +52,19 @@
 * `-o` 指定输出文件，默认`output.txt`
 * `-append` 指定不覆盖输出文件，向尾部输出
 * 可以提供多个输入文件
+
+注：输出编码取决于第一个输入文件的编码
+
+# 依赖
+
+依赖于`com.mozilla.universalchardet`探测文件编码
+
+如果有更好用的请通知我
+
+[地址在此处](https://code.google.com/archive/p/juniversalchardet/)
+
+# 许可
+
+本项目使用了com.mozilla.universalchardet，此库使用[Mozilla Public License](https://www.mozilla.org/en-US/MPL/)
+
+本项目其余部分使用[WTFPL](http://www.wtfpl.net/txt/copying)许可证

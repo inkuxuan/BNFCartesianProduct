@@ -18,6 +18,10 @@ public class PlaintTextBufferedWriter implements BNFResultWriter, AutoCloseable{
         this.writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outpath, append)));
     }
 
+    public PlaintTextBufferedWriter(String outpath, boolean append, String encoding) throws FileNotFoundException, UnsupportedEncodingException {
+        this.writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outpath, append), encoding));
+    }
+
 
     @Override
     public void write(OptionItem simpleOptionItem) throws IOException {

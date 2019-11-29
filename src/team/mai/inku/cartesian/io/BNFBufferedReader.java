@@ -15,11 +15,11 @@ public class BNFBufferedReader implements BNFReader {
     private BufferedReader reader;
 
     public BNFBufferedReader(File file) throws FileNotFoundException {
-        reader = new BufferedReader(new FileReader(file));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
     }
 
     public BNFBufferedReader(String path) throws FileNotFoundException {
-        reader = new BufferedReader(new FileReader(path));
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)));
     }
 
     public BNFBufferedReader(FileInputStream inputStream) {
