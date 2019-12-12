@@ -210,14 +210,14 @@ public class BNFBufferedReader implements BNFReader {
                     // [....]|<...>
                     //       ^pos
                     // expect '|' after any expression closure
-                    if (s.charAt(pos) == '|') {
+                    if (pos>=end||s.charAt(pos) == '|') {
                         options.add(item);
                         // [....]|<...>
                         //        ^pos
                         pos++;
                     } else {
-                        throw new IllegalArgumentException("\"" + s + "\" is OptionItem " +
-                                "but found none '|' char after bracket '" + s.charAt(closurePosition) + "' at position " + pos);
+                        throw new IllegalArgumentException("\"" + s.substring(start, end) + "\" is OptionItem " +
+                                "but found none '|' char after bracket '" + s.charAt(closurePosition) + "' at position " + (pos-start));
                     }
                     break;
                 case '|':
