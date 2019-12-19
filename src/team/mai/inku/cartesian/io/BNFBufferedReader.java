@@ -192,21 +192,73 @@ public class BNFBufferedReader implements BNFReader {
         if (isOptional)
             options.add(new SimpleItem(""));
         // actual analyzing
-
-        //simplified version
         int pos = start;
-        int opIdx = -1;
-        while ((opIdx = s.indexOf('|', pos)) != -1) {
-            if (opIdx >= end)
-                break;
-            //<....|....|....|....>
-            // { pos^   ^opIdx   }
-            options.add(resolveString(s, pos, opIdx));
-            pos = opIdx + 1;
+        while (pos < end) {
+            // get start char
+            char mark = s.charAt(pos);
+            switch (mark) {
+                case '[':
+                case '<':
+                case '(':
+                    // look for the end of the bracket
+                    // [....]
+                    // ^pos ^closurePos
+                    int closurePosition = findBracketClosurePosition(s, pos, end);
+                    // resolve anything in the bracket
+                    Item item = resolveString(s, pos, closurePosition + 1);
+                    pos = closurePosition + 1;
+                    // [....]|<...>
+                    //       ^pos
+                    // expect '|' after any expression closure
+                    if (s.charAt(pos) == '|') {
+                        options.add(item);
+                        // [....]|<...>
+                        //        ^pos
+                        pos++;
+                    } else {
+                        throw new IllegalArgumentException("\"" + s + "\" is OptionItem " +
+                                "but found none '|' char after bracket '" + s.charAt(closurePosition) + "' at position " + pos);
+                    }
+                    break;
+                case '|':
+                    // empty case
+                    options.add(new SimpleItem(""));
+                    pos++;
+                    break;
+                default:
+                    // ...|...
+                    // literals, find next '|'
+                    int nextSplit = s.indexOf('|', pos);
+                    int synErrPos = Comparing.firstIndex(s, pos, '<', '(', '[');
+                    // if syntax error
+                    // like ...<.........>|
+                    //         ^synErrPos ^nextSplit
+                    // or   ...<.........> END
+                    if (
+                            (nextSplit > 0 && synErrPos > 0) &&
+                            (nextSplit < end && synErrPos < nextSplit)
+                    ) {
+                        System.err.println(s.substring(pos, end));
+                        for (int j = 0; j < synErrPos - 1; j++)
+                            System.err.print(" ");
+                        System.err.println("^");
+                        throw new IllegalArgumentException("\"" + s.substring(start, end) + "\" is OptionItem " +
+                                "but found literal content and then bracket placed between '|'s at " + (synErrPos - pos));
+                    }
+                    if (nextSplit < 0 || nextSplit >= end) {
+                        //There is no more case, read until end and add option
+                        options.add(new SimpleItem(s.substring(pos, end)));
+                        pos = end;
+                        break;
+                    }
+                    // pos ~ closure(exclusive) is a literal item
+                    // ABC|DEF
+                    //    ^nextSplit
+                    options.add(new SimpleItem(s.substring(pos, nextSplit)));
+                    pos = nextSplit + 1;
+                    break;
+            }
         }
-        //..........|......>
-        //           ^pos  ^end
-        options.add(resolveString(s, pos, end));
         return new OptionItem(options);
     }
 
