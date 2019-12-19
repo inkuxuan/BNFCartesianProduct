@@ -43,7 +43,7 @@ depend on `com.mozilla.universalchardet` to detect file encoding
 
 PLEASE TELL ME IF THERE IS A BETTER ONE TO USE
 
-[地址在此处](https://code.google.com/archive/p/juniversalchardet/)
+[URL](https://code.google.com/archive/p/juniversalchardet/)
 
 # LICENSE
 
