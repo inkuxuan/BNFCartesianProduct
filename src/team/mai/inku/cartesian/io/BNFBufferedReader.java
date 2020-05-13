@@ -76,7 +76,7 @@ public class BNFBufferedReader implements BNFReader {
                     System.err.print(" ");
                 }
                 System.err.println("^");
-                throw new IllegalArgumentException("\"Bracket mismatch at line \"+i");
+                throw new IllegalArgumentException("Bracket mismatch at line " +i);
             }
         }
         return result;
